@@ -1,4 +1,4 @@
- # Consensus Extractor
+# Consensus Extractor
 ConsensusExtractor - writtten by Bioinformatics Group CDAC (Centre For Development Of Advanced Computing), Pune 
 in collboration with Pirbright Institute, UK
 
