@@ -46,7 +46,7 @@ else
 fi
 
 echo "Your command given as "
-echo " sh consensusExtractor.sh "$input_path_bam" "$ref_filename" "$pos_chr_start_end" "$4"_"$name_chr_start_end" "
+echo " ./consensusExtractor.sh "$input_path_bam" "$ref_filename" "$pos_chr_start_end" "$4"_"$name_chr_start_end" "
 
 input_bam_dir=$(echo "$input_path_bam")
 #echo "$input_bam_dir"
