@@ -9,7 +9,7 @@ in collboration with Pirbright Institute, UK
  which is limited to substitution, insertion sequences and the output is in consensus fasta format.
 
 #  Dependencies required
-
+*  bash shell(/bin/bash)
 *  perl(linux)
 *  samtools-0.1.19
 *  vcftools_0.1.11
@@ -28,9 +28,11 @@ Output will be generated in bam folder - contain two folders as follows -
 The conflicting variants message will be displayed if there is an insertion in one sequence and the same region is deleted in other sequence. 
 
 User can use this consensus output in fasta format for alignment analysis.
- 
+# Note
+after downloading scripts, please make it executable and follow the command below
+
 `Usage:`
-`consensusExtractor.sh <Full Input_Path for bam files> <Full Input path for genome reference file> <chr:Start_coordinate-End_Coordinate> <Output Filename>`
+` ./consensusExtractor.sh <Full Input_Path for bam files> <Full Input path for genome reference file> <chr:Start_coordinate-End_Coordinate> <Output Filename> `
 
 # Commands Used as example
 
@@ -38,6 +40,6 @@ User must give &lt;chromosome number:start_coordinate-End_coordinate&gt; in ENSE
 
 # Examples
 
-`sh consensusExtractor.sh /input/bam/ /input/bam/ref_genome.fa 3:14,534-3,45,987 output_consensus.fasta`
+` ./consensusExtractor.sh /input/bam/ /input/bam/ref_genome.fa 3:14,534-3,45,987 output_consensus.fasta `
 
-`sh consensusExtractor.sh /input/bam/ /input/bam/ref_genome.fa 3:143567-234569 output_consensus.fasta`
+` ./consensusExtractor.sh /input/bam/ /input/bam/ref_genome.fa 3:143567-234569 output_consensus.fasta `
