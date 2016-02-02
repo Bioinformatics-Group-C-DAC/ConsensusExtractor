@@ -1,6 +1,6 @@
  # Consensus Extractor
- ConsensusExtractor - writtten by Bioinformatics Group CDAC (Centre For Development Of Advanced Computing), Pune 
- in collboration with Pirbright Institute, UK
+ConsensusExtractor - writtten by Bioinformatics Group CDAC (Centre For Development Of Advanced Computing), Pune 
+in collboration with Pirbright Institute, UK
 
  _**Authors - Neeraj Bharti, Yatish B. Patil, Sunitha Manjari, Dr. Jan Kim**_
 
