@@ -82,7 +82,8 @@ echo " sh consensusExtractor.sh "$input_path_bam" "$ref_filename" "$pos_chr_star
 
 input_bam_dir=$(echo "$input_path_bam")
 #echo "$input_bam_dir"
-mkdir -p "tmp/"
+#mkdir -p "tmp/"
+temp=$(mktemp -d $name_chr_start_end.XXXXXX)
 mkdir -p "consensus_outputs/"
 
 for i in $( ls $input_bam_dir/*.bam)
@@ -112,11 +113,11 @@ samtools faidx "$ref_filename" $pos_chr_start_end > "$name_chr_start_end"_"$name
 cat "$name_chr_start_end"_"$name_ref" | vcf-consensus "$filename"_"$name_chr_start_end".vcf.gz | sed -e "s/^>.*/>${filename}_${name_chr_start_end}/g" >> consensus_outputs/$4_"$name_chr_start_end"
 
 
-mv "$filename"_"$name_chr_start_end".bam "$filename"_"$name_chr_start_end"_sorted.bam "$filename"_"$name_chr_start_end"_sorted.bam.bai tmp/
+mv "$filename"_"$name_chr_start_end".bam "$filename"_"$name_chr_start_end"_sorted.bam "$filename"_"$name_chr_start_end"_sorted.bam.bai $temp
 
 mv "$name_chr_start_end"_"$name_ref" consensus_outputs/
 
 done
 
-mv *.upileup *.vcf.gz *.tbi tmp/
+mv *.upileup *.vcf.gz *.tbi $temp
 
