@@ -16,8 +16,8 @@ in collboration with Pirbright Institute, UK
 *  tabix-0.2.6 also include bgzip
 
 # Inputs
- Please mention user Input path for .bam  - must contain sorted bam files with index files.
- Please mention user Input reference genome directory path  having reference genome file in .fa format < Input path  for reference genome file name>.fa (.fa format only)
+ * Please mention user Input path for .bam  - must contain sorted bam files with index files.
+ * Please mention user Input reference genome directory path  having reference genome file in .fa format < Input path  for reference genome file name>.fa (.fa format only)
 
 # Output 
 Output will be created in current working directory of script - contain two folders as follows -
