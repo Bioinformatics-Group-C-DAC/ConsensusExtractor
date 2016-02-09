@@ -3,21 +3,53 @@
 ##########################################################################
 #                                                                        #
 #                      consensusExtractor.sh                             #
-#                           Version 0.91                                 #
+#                           Version 0.9.1                                #
 ##########################################################################
 
 
-input_path_bam="${1:?[Usage: consensusExtractor.sh <Input_Path for bam files> <ref_genome.fa> <chr:start_Position-End_Position> <Output_filename>]}"
+input_path_bam="${1:?[Usage: consensusExtractor.sh <Input_Path for bam files> <Input_Path for ref_genome.fa> <chr:start_Position-End_Position> <Output_filename>]}"
 
-ref_filename="${2:?[Usage: consensusExtractor.sh <Input_Path for bam files> <ref_genome.fa> <chr:start_Position-End_Position> <Output_filename>]}"
+ref_filename="${2:?[Usage: consensusExtractor.sh <Input_Path for bam files> <Input_Path for ref_genome.fa> <chr:start_Position-End_Position> <Output_filename>]}"
 
-chr_start_end="${3:?[Usage: consensusExtractor.sh <Input_Path for bam files> <ref_genome.fa> <chr:start_Position-End_Position> <Output_filename>]}"
+chr_start_end="${3:?[Usage: consensusExtractor.sh <Input_Path for bam files> <Input_Path for ref_genome.fa> <chr:start_Position-End_Position> <Output_filename>]}"
 
-output_filename="${4:?[Usage: consensusExtractor.sh <Input_Path for bam files> <ref_genome.fa> <chr:start_Position-End_Position> <Output_filename>]}"
+output_filename="${4:?[Usage: consensusExtractor.sh <Input_Path for bam files> <Input_Path for ref_genome.fa> <chr:start_Position-End_Position> <Output_filename>]}"
+
+
+bam_files=$(ls $input_path_bam)
+#echo "$bam_files"
+
+if [[ "$bam_files" =~ ".bam" ]]; then
+
+bam_count=$(ls $input_path_bam/*.bam | wc -l )
+#echo "$bam_count"
+
+else
+	echo "Please check input path for bam files"
+	exit 1
+
+fi
+bam_count=$(ls $input_path_bam/*.bam | wc -l )
+if [[ "$bam_files" =~ ".bam" ]]; then
+bai_count=$(ls $input_path_bam/*.bam.bai | wc -l )
+#echo "$bai_count"
+	if [[ $bam_count == $bai_count  ]]; then
+        echo ".bam and index file are there"
+else 
+       echo "Please check respective index .bai file for .bam file "
+       exit 1
+		fi
+	fi
 
 ref="${ref_filename##*/}"
 name_ref="${ref%.*}"
-#echo "$name_ref"
+
+if [[ -f "$ref_filename" ]]; then
+        echo "reference genome .fa is there"
+else
+        echo "Please check input path and name for reference genome in .fa format in reference genome directory"
+        exit 1
+fi
 
 
 if [[ "$chr_start_end" =~ ":" && "$chr_start_end" =~ "-" ]]; then
@@ -46,25 +78,28 @@ else
 fi
 
 echo "Your command given as "
-echo " ./consensusExtractor.sh "$input_path_bam" "$ref_filename" "$pos_chr_start_end" "$4"_"$name_chr_start_end" "
+echo " sh consensusExtractor.sh "$input_path_bam" "$ref_filename" "$pos_chr_start_end" "$4"_"$name_chr_start_end" "
 
 input_bam_dir=$(echo "$input_path_bam")
 #echo "$input_bam_dir"
-mkdir -p "$input_bam_dir/tmp/"
-mkdir -p "$input_bam_dir/consensus_outputs/"
-cd $input_bam_dir
+mkdir -p "tmp/"
+mkdir -p "consensus_outputs/"
 
-for i in $( ls *.bam)
+for i in $( ls $input_bam_dir/*.bam)
 do
 
-filename="${i%.*}"
+bam="${i##*/}"
+#echo "$bam"
 
-samtools view -b "$filename".bam $pos_chr_start_end > "$filename"_"$name_chr_start_end".bam
+filename="${bam%.*}"
+#echo "$filename"
+
+samtools view -b "$i" $pos_chr_start_end > "$filename"_"$name_chr_start_end".bam
 
 samtools sort "$filename"_"$name_chr_start_end".bam "$filename"_"$name_chr_start_end"_sorted
 samtools index "$filename"_"$name_chr_start_end"_sorted.bam
 
-samtools mpileup -u -d 100000 -f "$name_ref".fa "$filename"_"$name_chr_start_end"_sorted.bam > "$filename"_"$name_chr_start_end".upileup
+samtools mpileup -u -d 100000 -f "$ref_filename" "$filename"_"$name_chr_start_end"_sorted.bam > "$filename"_"$name_chr_start_end".upileup
 
 bcftools view -cg "$filename"_"$name_chr_start_end".upileup > "$filename"_"$name_chr_start_end".vcf
 
@@ -72,16 +107,16 @@ bgzip "$filename"_"$name_chr_start_end".vcf
 
 tabix -p vcf "$filename"_"$name_chr_start_end".vcf.gz
 
-samtools faidx "$name_ref".fa $pos_chr_start_end > "$name_chr_start_end"_"$name_ref"
+samtools faidx "$ref_filename" $pos_chr_start_end > "$name_chr_start_end"_"$name_ref"
 
-cat "$name_chr_start_end"_"$name_ref" | vcf-consensus "$filename"_"$name_chr_start_end".vcf.gz | sed -e "s/^>.*/>${filename}_${name_chr_start_end}/g" >> $input_bam_dir/consensus_outputs/$4_"$name_chr_start_end"
+cat "$name_chr_start_end"_"$name_ref" | vcf-consensus "$filename"_"$name_chr_start_end".vcf.gz | sed -e "s/^>.*/>${filename}_${name_chr_start_end}/g" >> consensus_outputs/$4_"$name_chr_start_end"
 
 
-mv "$filename"_"$name_chr_start_end".bam "$filename"_"$name_chr_start_end"_sorted.bam "$filename"_"$name_chr_start_end"_sorted.bam.bai $input_bam_dir/tmp/
+mv "$filename"_"$name_chr_start_end".bam "$filename"_"$name_chr_start_end"_sorted.bam "$filename"_"$name_chr_start_end"_sorted.bam.bai tmp/
 
-mv "$name_chr_start_end"_"$name_ref" $input_bam_dir/consensus_outputs/
+mv "$name_chr_start_end"_"$name_ref" consensus_outputs/
 
 done
 
-mv *.upileup *.vcf.gz *.tbi $input_bam_dir/tmp/
+mv *.upileup *.vcf.gz *.tbi tmp/
 
