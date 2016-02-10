@@ -34,7 +34,7 @@ if [[ "$bam_files" =~ ".bam" ]]; then
 bai_count=$(ls $input_path_bam/*.bam.bai | wc -l )
 #echo "$bai_count"
 	if [[ $bam_count == $bai_count  ]]; then
-        echo ".bam and index file are there"
+        echo ".bam and index file are there" > /dev/null
 else 
        echo "Please check respective index .bai file for .bam file "
        exit 1
@@ -45,7 +45,7 @@ ref="${ref_filename##*/}"
 name_ref="${ref%.*}"
 
 if [[ -f "$ref_filename" ]]; then
-        echo "reference genome .fa is there"
+        echo "reference genome .fa is there" > /dev/null
 else
         echo "Please check input path and name for reference genome in .fa format in reference genome directory"
         exit 1
@@ -78,13 +78,11 @@ else
 fi
 
 echo "Your command given as "
-echo " sh consensusExtractor.sh "$input_path_bam" "$ref_filename" "$pos_chr_start_end" "$4"_"$name_chr_start_end" "
+echo " sh consensusExtractor.sh "$input_path_bam" "$ref_filename" "$pos_chr_start_end" "$4" "
 
 input_bam_dir=$(echo "$input_path_bam")
 #echo "$input_bam_dir"
-#mkdir -p "tmp/"
 temp=$(mktemp -d $name_chr_start_end.XXXXXX)
-mkdir -p "consensus_outputs/"
 
 for i in $( ls $input_bam_dir/*.bam)
 do
@@ -98,6 +96,7 @@ filename="${bam%.*}"
 samtools view -b "$i" $pos_chr_start_end > "$filename"_"$name_chr_start_end".bam
 
 samtools sort "$filename"_"$name_chr_start_end".bam "$filename"_"$name_chr_start_end"_sorted
+
 samtools index "$filename"_"$name_chr_start_end"_sorted.bam
 
 samtools mpileup -u -d 100000 -f "$ref_filename" "$filename"_"$name_chr_start_end"_sorted.bam > "$filename"_"$name_chr_start_end".upileup
@@ -110,14 +109,13 @@ tabix -p vcf "$filename"_"$name_chr_start_end".vcf.gz
 
 samtools faidx "$ref_filename" $pos_chr_start_end > "$name_chr_start_end"_"$name_ref"
 
-cat "$name_chr_start_end"_"$name_ref" | vcf-consensus "$filename"_"$name_chr_start_end".vcf.gz | sed -e "s/^>.*/>${filename}_${name_chr_start_end}/g" >> consensus_outputs/$4_"$name_chr_start_end"
+cat "$name_chr_start_end"_"$name_ref" | vcf-consensus "$filename"_"$name_chr_start_end".vcf.gz | sed -e "s/^>.*/>${filename}_${name_chr_start_end}/g" >> "$4"
 
 
 mv "$filename"_"$name_chr_start_end".bam "$filename"_"$name_chr_start_end"_sorted.bam "$filename"_"$name_chr_start_end"_sorted.bam.bai $temp
 
-mv "$name_chr_start_end"_"$name_ref" consensus_outputs/
-
 done
 
-mv *.upileup *.vcf.gz *.tbi $temp
-
+#cat "$name_chr_start_end"_"$name_ref" "$4" >> "$4"
+mv *.upileup *.vcf.gz *.tbi "$name_chr_start_end"_"$name_ref" $temp
+rm -rf $temp
