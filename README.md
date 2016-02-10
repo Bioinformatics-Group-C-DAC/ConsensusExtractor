@@ -3,7 +3,7 @@
 ConsensusExtractor - writtten by Bioinformatics Group CDAC (Centre For Development Of Advanced Computing), Pune 
 in collboration with Pirbright Institute, UK
 
- _**Authors - Neeraj Bharti, Yatish Patil, Sunitha Manjari, Dr. Jan Kim**_
+ _**Authors - Neeraj Bharti, Yatish B. Patil, Sunitha Manjari, Dr. Jan Kim**_
 
  Consesnsus Extractor - gives user a consensus sequence of a selected region from bam files 
  in comaprison with reference genome file, where it integrates data from mpileup, vcf file to fasta format
