@@ -56,6 +56,11 @@ fi
 if [[ "$chr_start_end" =~ ":" && "$chr_start_end" =~ "-" ]]; then
 
 chr=$(echo "$chr_start_end" | perl -pe 's/(.*?):(.*?)-(.*)/$1/g')
+	
+	if [[ "$chr" =~ "MT" ]]; then
+	echo "This version does not deal with MT (Mitochondria)"
+	exit 1
+	fi
 
 start_co=$(echo "$chr_start_end" | perl -pe 's/(.*?):(.*?)-(.*)/$2/' | sed -e 's/,//g')
 
@@ -65,7 +70,7 @@ else
         echo "Check the chr:start-end coordinate format as ENSEMBL or IGV"
         exit 1
 fi
-#echo -e "$chr $start_co $end_co"
+
 
 if [[ $start_co -gt $end_co  ]]; then
         echo "Check the Start Position - Start Position should be less than End Position"
@@ -118,7 +123,7 @@ mv "$filename"_"$name_chr_start_end".bam "$filename"_"$name_chr_start_end"_sorte
 done
 
 cat "$name_chr_start_end"_"$name_ref" "$4" >> "$4" 2> /dev/null
-sed -i "s/^>${pos_chr_start_end}/>${name_ref}_${pos_chr_start_end}/g" "$4"
+sed -i "s/^>${pos_chr_start_end}/>${name_ref}_${name_chr_start_end}/g" "$4"
 
 mv *.upileup *.vcf.gz *.tbi "$name_chr_start_end"_"$name_ref" $temp
 rm -rf $temp
