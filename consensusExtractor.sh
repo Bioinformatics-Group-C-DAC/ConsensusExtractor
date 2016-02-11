@@ -105,9 +105,9 @@ samtools sort "$filename"_"$name_chr_start_end".bam "$filename"_"$name_chr_start
 
 samtools index "$filename"_"$name_chr_start_end"_sorted.bam
 
-samtools mpileup -u -d 100000 -f "$ref_filename" "$filename"_"$name_chr_start_end"_sorted.bam > "$filename"_"$name_chr_start_end".upileup
+samtools mpileup -u -d 100000 -f "$ref_filename" "$filename"_"$name_chr_start_end"_sorted.bam > "$filename"_"$name_chr_start_end".upileup 2> /dev/null
 
-bcftools view -cg "$filename"_"$name_chr_start_end".upileup > "$filename"_"$name_chr_start_end".vcf
+bcftools view -cg "$filename"_"$name_chr_start_end".upileup > "$filename"_"$name_chr_start_end".vcf 2> /dev/null
 
 bgzip "$filename"_"$name_chr_start_end".vcf
 
@@ -115,7 +115,7 @@ tabix -p vcf "$filename"_"$name_chr_start_end".vcf.gz
 
 samtools faidx "$ref_filename" $pos_chr_start_end > "$name_chr_start_end"_"$name_ref"
 
-cat "$name_chr_start_end"_"$name_ref" | vcf-consensus "$filename"_"$name_chr_start_end".vcf.gz | sed -e "s/^>.*/>${filename}_${name_chr_start_end}/g" >> "$4"
+cat "$name_chr_start_end"_"$name_ref" | vcf-consensus "$filename"_"$name_chr_start_end".vcf.gz 2> /dev/null | sed -e "s/^>.*/>${filename}_${name_chr_start_end}/g" >> "$4"
 
 
 mv "$filename"_"$name_chr_start_end".bam "$filename"_"$name_chr_start_end"_sorted.bam "$filename"_"$name_chr_start_end"_sorted.bam.bai $temp
