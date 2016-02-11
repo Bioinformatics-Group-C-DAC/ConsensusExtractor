@@ -42,3 +42,4 @@ User must give &lt;chromosome number:start_coordinate-End_coordinate&gt; in ENSE
 ` ./consensusExtractor.sh /input/bam_dir/ /input/ref/ref_genome.fa 3:14,534-3,45,987 output_consensus.fasta `
 
 ` ./consensusExtractor.sh /input/bam_files/ /input/test/ref/ref_genome.fa 3:143567-234569 xyz_file `
+

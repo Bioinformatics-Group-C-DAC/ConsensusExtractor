@@ -43,6 +43,7 @@ else
 
 ref="${ref_filename##*/}"
 name_ref="${ref%.*}"
+#echo "$name_ref"
 
 if [[ -f "$ref_filename" ]]; then
         echo "reference genome .fa is there" > /dev/null
@@ -116,6 +117,9 @@ mv "$filename"_"$name_chr_start_end".bam "$filename"_"$name_chr_start_end"_sorte
 
 done
 
-#cat "$name_chr_start_end"_"$name_ref" "$4" >> "$4"
+
+cat "$name_chr_start_end"_"$name_ref" "$4" >> "$4"
+sed -i "s/^>${pos_chr_start_end}/>${pos_chr_start_end}_${name_ref}/g" "$4"
+
 mv *.upileup *.vcf.gz *.tbi "$name_chr_start_end"_"$name_ref" $temp
 rm -rf $temp
