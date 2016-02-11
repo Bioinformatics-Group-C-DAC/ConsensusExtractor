@@ -117,9 +117,8 @@ mv "$filename"_"$name_chr_start_end".bam "$filename"_"$name_chr_start_end"_sorte
 
 done
 
-
-cat "$name_chr_start_end"_"$name_ref" "$4" >> "$4"
-sed -i "s/^>${pos_chr_start_end}/>${pos_chr_start_end}_${name_ref}/g" "$4"
+cat "$name_chr_start_end"_"$name_ref" "$4" >> "$4" 2> /dev/null
+sed -i "s/^>${pos_chr_start_end}/>${name_ref}_${pos_chr_start_end}/g" "$4"
 
 mv *.upileup *.vcf.gz *.tbi "$name_chr_start_end"_"$name_ref" $temp
 rm -rf $temp
